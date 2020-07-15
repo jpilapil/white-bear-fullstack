@@ -1,0 +1,14 @@
+// import functions, variables, mixins from boostrap
+
+@import "bootstrap/functions";
+@import "bootstrap/variables";
+@import "bootstrap/mixins";
+
+// import theme.scss
+@import "theme.scss";
+
+// import Boostrap
+@import "bootstrap/bootstrap.scss";
+
+// import custom styles
+@import "style.scss";

@@ -1,0 +1,168 @@
+// Body elements
+
+h1 {
+  color: $white;
+}
+
+// TEXT
+.text-brand {
+  font-family: $font-family-brand;
+}
+
+// BUTTONS
+
+.btn-link {
+  font-weight: $font-weight-bold;
+  color: $gray-500;
+  padding-left: 0;
+  padding-right: 0;
+  border: 0;
+}
+
+.btn-group .btn {
+  font-weight: $font-weight-normal;
+}
+
+.navigation-button {
+  font-weight: $font-weight-normal;
+}
+
+// TABS
+.tab-separator {
+  border-left: 1px $gray-800 solid;
+}
+
+.tab-active {
+  background-color: $gray-800;
+}
+
+// CARDS
+.card {
+  border: 0;
+}
+
+.card-body {
+  color: $white;
+  font-family: $font-family-serif;
+  font-size: $font-size-base * 1.25;
+}
+
+.card.bg-primary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.card.bg-secondary {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.card-title {
+  color: $gray-800;
+}
+
+.card-text-landing {
+  color: $gray-500;
+  font-size: $font-size-base;
+  margin-bottom: 1rem;
+}
+.sign-up-text {
+  color: $success;
+  font-size: $font-size-base;
+  margin-bottom: 1rem;
+}
+
+textarea {
+  width: 100%;
+  background-color: transparent;
+
+  border: none;
+  overflow: auto;
+  outline: none;
+
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+
+  resize: none; /*remove the resize handle on the bottom right*/
+}
+.card textarea {
+  color: $white;
+}
+
+// .input-outline {
+//    border: 2px solid $gray;
+// }
+
+// BACKGROUND IMAGE
+.background-image {
+  background-image: url(../img/background-landing.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+}
+
+#login-button {
+  float: right;
+  background-color: $blue-600;
+}
+
+// fixes card padding issue on login page
+#inside-card {
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+// fixes button issue on login page
+.landing-button {
+  margin-top: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+// CUES
+.bg-success,
+.bg-danger p.lead {
+  color: $white;
+}
+
+#landing-brand {
+  padding-top: 5rem;
+  // padding-left: 5rem;
+}
+
+.bear-logo {
+  padding-left: 2rem;
+}
+
+.logo-text {
+  // padding-left: 1rem;
+  font-family: $font-family-brand;
+}
+
+// fixes the double arrows on select tab
+.custom-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+// character $danger color
+.counter-color {
+  color: $danger;
+}
+
+// error messages
+
+.invalidPasswordFeedback,
+.invalidEmailFeedback {
+  color: $danger;
+  font-size: $font-size-base;
+}
+
+.disabled {
+  pointer-events: fill !important;
+  cursor: not-allowed;
+}
