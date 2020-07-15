@@ -23,7 +23,7 @@ export default class AllCards extends React.Component {
   componentDidMount() {
     axios
       .get(
-        "https://raw.githubusercontent.com/jpilapil/white-bear-mpa/master/src/mock-data/memory-cards.json"
+        "http://localhost:3333/api/v1/memory-cards?userId=a70d566a-9701-449e-8556-554bfda5be2f&order=%60memory_cards%60.%60created_at%60%20DESC"
       )
       .then((res) => {
         // use ES6 arrow function to grant access to 'this' https://stackoverflow.com/questions/38238512/react-this-is-undefined
