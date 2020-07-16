@@ -1,9 +1,8 @@
 import React from "react";
 import AppTemplate from "../ui/AppTemplate";
 import MemoryCard from "../ui/MemoryCard";
-
-import orderBy from "lodash/orderBy";
 import axios from "axios";
+const userId = "a70d566a-9701-449e-8556-554bfda5be2f";
 
 // const memoryCard = memoryCards[2];
 
@@ -13,69 +12,70 @@ export default class AllCards extends React.Component {
 
     // initial LOCAL state
     this.state = {
-      order: '[["createdAt"], ["desc"]]',
-      displayedMemoryCards: [],
-      allMemoryCards: [],
+      order: "memory_cards.created_at%20DESC",
+      memoryCards: [],
+      searchTerm: "",
     };
   }
 
   // componentDidMount is a lifecycle method, does not need to be called somewhere else, will always run
   componentDidMount() {
+    this.setMemoryCards();
+  }
+
+  // filterByInput() {
+  //   const input = document.getElementById("search-input").value;
+  //   const lowerCasedInput = input.toLowerCase();
+  //   console.log(lowerCasedInput);
+  //   const copyOfAllMemoryCards = [...this.state.allMemoryCards];
+  //   const filteredMemoryCards = copyOfAllMemoryCards.filter((memoryCard) => {
+  //     const lowerCasedImagery = memoryCard.imagery.toLowerCase();
+  //     const lowerCasedAnswer = memoryCard.answer.toLowerCase();
+  //     if (
+  //       lowerCasedImagery.includes(lowerCasedInput) ||
+  //       lowerCasedAnswer.includes(lowerCasedInput)
+  //     ) {
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  //   this.setState({ displayedMemoryCards: filteredMemoryCards }, () => {
+  //     this.setMemoryCards();
+  //   });
+  // }
+
+  setOrder(e) {
+    const newOrder = e.target.value;
+    console.log(newOrder);
+    this.setState({ order: newOrder }, () => {
+      this.setMemoryCards();
+    }); //updates state of the select to show which filter you clicked on (most recent, oldest, hardest, etc)
+  }
+
+  setSeachTerm() {
+    const searchInput = document.getElementById("search-input").value;
+    this.setState({ searchTerm: searchInput }, () => {
+      this.setMemoryCards();
+    });
+  }
+
+  setMemoryCards() {
     axios
       .get(
-        "/api/v1/memory-cards?userId=a70d566a-9701-449e-8556-554bfda5be2f&searchTerm=slash&order=%60memory_cards%60.%60created_at%60%20DESC"
+        `/api/v1/memory-cards?userId=${userId}&searchTerm=${this.state.searchTerm}&order=${this.state.order}`
       )
       .then((res) => {
         // use ES6 arrow function to grant access to 'this' https://stackoverflow.com/questions/38238512/react-this-is-undefined
         // handle success
         console.log(res.data);
-        const memoryCards = res.data;
         this.setState({
-          displayedMemoryCards: orderBy(memoryCards, '["createdAt"], ["desc"]'),
-          allMemoryCards: orderBy(memoryCards, '["createdAt"], ["desc"]'),
+          memoryCards: res.data,
         });
       })
       .catch((error) => {
         // handle error
         console.log(error);
       });
-  }
-
-  filterByInput() {
-    const input = document.getElementById("search-input").value;
-    const lowerCasedInput = input.toLowerCase();
-    console.log(lowerCasedInput);
-    const copyOfAllMemoryCards = [...this.state.allMemoryCards];
-    const filteredMemoryCards = copyOfAllMemoryCards.filter((memoryCard) => {
-      const lowerCasedImagery = memoryCard.imagery.toLowerCase();
-      const lowerCasedAnswer = memoryCard.answer.toLowerCase();
-      if (
-        lowerCasedImagery.includes(lowerCasedInput) ||
-        lowerCasedAnswer.includes(lowerCasedInput)
-      ) {
-        return true;
-      }
-      return false;
-    });
-    this.setState({ displayedMemoryCards: filteredMemoryCards }, () => {
-      this.setMemoryCards();
-    });
-  }
-
-  setOrder(e) {
-    const newOrder = e.target.value;
-    console.log(newOrder); //returns string
-    this.setState({ order: newOrder }, () => {
-      this.setMemoryCards();
-    }); //updates state of the select to show which filter you clicked on (most recent, oldest, hardest, etc)
-  }
-
-  setMemoryCards() {
-    console.log("setting memcard");
-    const copyOfDisplayedMemoryCards = [...this.state.displayedMemoryCards]; // array of all our memory cards, shallow copy
-    const toJson = JSON.parse(this.state.order);
-    const orderedMemoryCards = orderBy(copyOfDisplayedMemoryCards, ...toJson);
-    this.setState({ displayedMemoryCards: orderedMemoryCards }); //updates state of the select to show which filter you clicked on (most recent, oldest, hardest, etc)
   }
 
   // setMemoryCardsOrder(e) {
@@ -104,7 +104,7 @@ export default class AllCards extends React.Component {
             <div className="col-4 col-sm-4 mb-4">
               <button
                 className="btn btn-sm btn-primary float-right"
-                onClick={() => this.filterByInput()}
+                onClick={() => this.setSeachTerm()}
               >
                 Search
               </button>
@@ -123,18 +123,20 @@ export default class AllCards extends React.Component {
                 className="form-control form-control-sm"
                 onChange={(e) => this.setOrder(e)}
               >
-                <option value='[["createdAt"], ["desc"]]'>Most recent</option>
-                <option value='[["createdAt"], ["asc"]]'>Oldest</option>
-                <option value='[["totalSuccessfulAttempts", "createdAt"], ["asc", "asc"]]'>
+                <option value="memory_cards.created_at%20DESC">
+                  Most recent
+                </option>
+                <option value="memory_cards.created_at%20ASC">Oldest</option>
+                <option value="memory_cards.total_successful_attempts%20ASC, memory_cards.created_at%20ASC">
                   Hardest
                 </option>
-                <option value='[["totalSuccessfulAttempts", "createdAt"], ["desc", "desc"]]'>
+                <option value="memory_cards.total_successful_attempts%20DESC, memory_cards.created_at%20DESC">
                   Easiest
                 </option>
               </select>
             </div>
           </div>
-          {this.state.displayedMemoryCards.map((memoryCard) => {
+          {this.state.memoryCards.map((memoryCard) => {
             // map through memory cards array, get each memory card
             // find each card by id, return answer and imagery values
             return <MemoryCard card={memoryCard} key={memoryCard.id} />;

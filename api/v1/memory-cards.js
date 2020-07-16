@@ -27,12 +27,25 @@ router.get("/", (req, res) => {
     userId,
     constructedSearchTerm,
     constructedSearchTerm,
-    order,
+    { toSqlString: () => order },
   ])
-    .then((dbRes) => {
+    .then((memoryCards) => {
       // logic executed on successful response
-      // console.log(dbRes);
-      res.json(dbRes);
+      // console.log(memoryCards);
+      const camelCaseMemoryCards = memoryCards.map((memoryCard) => {
+        return {
+          id: memoryCard.id,
+          imagery: memoryCard.imagery,
+          answer: memoryCard.answer,
+          userId: memoryCard.user_id,
+          createdAt: memoryCard.created_at,
+          nextAttemptAt: memoryCard.next_attempt_at,
+          lastAttemptAt: memoryCard.last_attempt_at,
+          totalSuccessfulAttempts: memoryCard.total_successful_attempts,
+          level: memoryCard.level,
+        };
+      });
+      res.json(camelCaseMemoryCards);
     })
     .catch((err) => {
       // logic executed on failed response
