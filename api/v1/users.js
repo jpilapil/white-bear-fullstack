@@ -2,35 +2,36 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../../db");
-const selectUser = require("../../queries/selectUser");
-const { toJson, toSafeParse, toHash } = require("../../utils/helpers");
-const bcrypt = require("bcrypt");
-
-// @route      GET api/v1/users
-// @desc       get a valid user via email and password
-// @access     Public
-router.get("/", (req, res) => {
-  db.query(selectUser("bob@gmail.com", "replace_me"))
-    .then((dbRes) => {
-      // logic executed on successful response
-      const user = toSafeParse(toJson(dbRes)); // converts row data packet to json, returns an array
-      console.log(user);
-      res.json(user);
-    })
-    .catch((err) => {
-      // logic executed on failed response
-      console.log(err);
-      res.status(400).json(err);
-    });
-});
+const insertUser = require("../../queries/insertUser");
+const { toHash } = require("../../utils/helpers");
+const getSignUpEmailError = require("../../validation/getSignUpEmailError");
+const getSignUpPasswordError = require("../../validation/getSignUpPasswordError");
 
 // @route      POST api/v1/users
 // @desc       create a new user
 // @access     Public
-router.post("/", (req, res) => {
-  const user = req.body;
-  user.password = toHash(user.password);
-  console.log(user);
+router.post("/", async (req, res) => {
+  const { id, email, password, createdAt } = req.body;
+  const emailError = getSignUpEmailError(email);
+  const passwordError = getSignUpPasswordError(password);
+  if (emailError === "" && passwordError === "") {
+    const user = {
+      id: id,
+      email: email,
+      password: await toHash(password),
+      created_at: createdAt,
+    };
+    console.log(user);
+    db.query(insertUser, user)
+      .then((dbRes) => {
+        console.log(dbRes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    res.status(400).json({ emailError, passwordError });
+  }
 });
 
 module.exports = router;
