@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 
+app.use(express.json());
 app.use("/api/v1/users", require("./api/v1/users")); // use the route, require the file
 app.use("/api/v1/memory-cards", require("./api/v1/memory-cards"));
 

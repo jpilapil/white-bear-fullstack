@@ -1,6 +1,6 @@
 import React from "react";
 import classnames from "classnames";
-import hash from "object-hash";
+
 import { v4 as getUuid } from "uuid";
 import { withRouter } from "react-router-dom";
 import { EMAIL_REGEX } from "../../utils/helpers";
@@ -71,7 +71,7 @@ class LogIn extends React.Component {
       const user = {
         id: getUuid(),
         email: emailInput,
-        password: hash(passwordInput),
+        password: passwordInput,
         createdAt: Date.now(),
       };
       console.log("created user object for POST: ", user);
@@ -107,7 +107,7 @@ class LogIn extends React.Component {
             </p>
 
             <div className="form-group">
-              <label className="text-muted" htmlFor="login-email-input">
+              <label className="text-secondary" htmlFor="login-email-input">
                 Email address
               </label>
               <input
@@ -124,7 +124,7 @@ class LogIn extends React.Component {
               <p className="text-danger">{this.state.emailError}</p>
             )}
             <div className="form-group">
-              <label className="text-muted" htmlFor="login-password-input">
+              <label className="text-secondary" htmlFor="login-password-input">
                 Password
               </label>
               <input

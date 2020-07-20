@@ -1,6 +1,5 @@
 import React from "react";
 import classnames from "classnames";
-import hash from "object-hash";
 import { v4 as getUuid } from "uuid";
 import { withRouter } from "react-router-dom";
 import { EMAIL_REGEX } from "../../utils/helpers";
@@ -93,33 +92,25 @@ class SignUp extends React.Component {
       this.state.hasEmailError === false &&
       this.state.hasPasswordError === false
     ) {
+      // create user obj
       const user = {
         id: getUuid(),
         email: emailInput,
-        password: hash(passwordInput),
+        password: passwordInput,
         createdAt: Date.now(),
       };
+      // post to api
+      axios
+        .post("/api/v1/users", user)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      // this.props.history.push("/create-answer");
 
       console.log("created user object for POST: ", user);
-      // mimis api response
-      axios
-        .get(
-          "https://raw.githubusercontent.com/jpilapil/white-bear-mpa/master/src/mock-data/user.json"
-        )
-        .then((res) => {
-          const currentUser = res.data;
-          console.log(currentUser);
-          this.props.dispatch({
-            type: actions.UPDATE_CURRENT_USER,
-            payload: res.data,
-          });
-        })
-        .catch((error) => {
-          // handle error
-          console.log(error);
-        });
-
-      this.props.history.push("/create-answer");
     }
   }
 
@@ -139,7 +130,10 @@ class SignUp extends React.Component {
                   Let's get you signed up.
                 </p>
                 <div className="form-group">
-                  <label className="text-muted" htmlFor="signup-email-input">
+                  <label
+                    className="text-secondary"
+                    htmlFor="signup-email-input"
+                  >
                     Email address
                   </label>
                   <input
@@ -157,8 +151,15 @@ class SignUp extends React.Component {
                   <p className="text-danger">{this.state.emailError}</p>
                 )}
                 <div className="form-group">
-                  <label className="text-muted" htmlFor="signup-password-input">
-                    Password
+                  <label
+                    className="text-secondary"
+                    htmlFor="signup-password-input"
+                  >
+                    Create a Password
+                    <br />
+                    <span className="text-muted">
+                      Must be at least 9 characters.
+                    </span>
                   </label>
                   <input
                     type="password"
