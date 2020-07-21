@@ -86,32 +86,43 @@ class SignUp extends React.Component {
     const emailInput = document.getElementById("signup-email-input").value;
     const passwordInput = document.getElementById("signup-password-input")
       .value;
-    await this.setEmailState(emailInput);
-    await this.setPasswordState(passwordInput, emailInput);
-    if (
-      this.state.hasEmailError === false &&
-      this.state.hasPasswordError === false
-    ) {
-      // create user obj
-      const user = {
-        id: getUuid(),
-        email: emailInput,
-        password: passwordInput,
-        createdAt: Date.now(),
-      };
-      // post to api
-      axios
-        .post("/api/v1/users", user)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      // this.props.history.push("/create-answer");
 
-      console.log("created user object for POST: ", user);
-    }
+    // create user obj
+    const user = {
+      id: getUuid(),
+      email: emailInput,
+      password: passwordInput,
+      createdAt: Date.now(),
+    };
+    // post to api
+    axios
+      .post("/api/v1/users", user)
+      .then((res) => {
+        console.log(res.data);
+        this.props.dispatch({
+          // update currentUser in global state with API response
+          type: actions.UPDATE_CURRENT_USER,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        const { data } = err.response;
+        console.log(data);
+        const { emailError, passwordError } = data;
+        if (emailError !== "") {
+          this.setState({ hasEmailError: true, emailError });
+        } else {
+          this.setState({ hasEmailError: false, emailError });
+        }
+        if (passwordError !== "") {
+          this.setState({ hasPasswordError: true, passwordError });
+        } else {
+          this.setState({ hasPasswordError: false, passwordError });
+        }
+      });
+    // this.props.history.push("/create-answer");
+
+    console.log("created user object for POST: ", user);
   }
 
   render() {
