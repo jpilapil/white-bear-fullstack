@@ -2,7 +2,6 @@ import React from "react";
 import classnames from "classnames";
 import { v4 as getUuid } from "uuid";
 import { withRouter } from "react-router-dom";
-import { EMAIL_REGEX } from "../../utils/helpers";
 import axios from "axios";
 import actions from "../../store/actions";
 import { connect } from "react-redux";
@@ -25,61 +24,6 @@ class SignUp extends React.Component {
     });
   }
 
-  // email error messages
-  async setEmailState(emailInput) {
-    const lowerCasedEmailInput = emailInput.toLowerCase();
-
-    if (emailInput === "")
-      this.setState({
-        emailError: "Please enter your email address.",
-        hasEmailError: true,
-      });
-    else if (EMAIL_REGEX.test(lowerCasedEmailInput) === false) {
-      this.setState({
-        emailError: "Please enter a valid email address.",
-        hasEmailError: true,
-      });
-    } else {
-      this.setState({ emailError: "", hasEmailError: false });
-    }
-  }
-
-  checkHasLocalPart(passwordInput, emailInput) {
-    const localPart = emailInput.split("@")[0];
-    if (localPart === "") return false;
-    else if (localPart.length < 4) return false;
-    else return passwordInput.includes(localPart);
-  }
-
-  // password error messages
-  async setPasswordState(passwordInput, emailInput) {
-    const uniqChars = [...new Set(passwordInput)];
-    if (passwordInput === "") {
-      this.setState({
-        passwordError: "Please create a password.",
-        hasPasswordError: true,
-      });
-    } else if (passwordInput.length < 9) {
-      this.setState({
-        passwordError: "Your password must be at least 9 characters.",
-        hasPasswordError: true,
-      });
-    } else if (this.checkHasLocalPart(passwordInput, emailInput)) {
-      this.setState({
-        passwordError: "Your password cannot contain your email address.",
-        hasPasswordError: true,
-      });
-    } else if (uniqChars.length < 3) {
-      this.setState({
-        passwordError:
-          "Your password must contain at least 3 unique characters.",
-        hasPasswordError: true,
-      });
-    } else {
-      this.setState({ passwordError: "", hasPasswordError: false });
-    }
-  }
-
   async validateAndCreateUser() {
     // email cant be blank
     // must have valid email regex
@@ -100,12 +44,14 @@ class SignUp extends React.Component {
       .then((res) => {
         console.log(res.data);
         this.props.dispatch({
-          // update currentUser in global state with API response
+          // update currentUser in global state in redux with API response
           type: actions.UPDATE_CURRENT_USER,
           payload: res.data,
         });
+        this.props.history.push("/create-answer");
       })
       .catch((err) => {
+        // use error responses to trigger state
         const { data } = err.response;
         console.log(data);
         const { emailError, passwordError } = data;
@@ -120,8 +66,6 @@ class SignUp extends React.Component {
           this.setState({ hasPasswordError: false, passwordError });
         }
       });
-    // this.props.history.push("/create-answer");
-
     console.log("created user object for POST: ", user);
   }
 

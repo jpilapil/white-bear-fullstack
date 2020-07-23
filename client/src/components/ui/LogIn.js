@@ -1,9 +1,6 @@
 import React from "react";
 import classnames from "classnames";
-
-import { v4 as getUuid } from "uuid";
 import { withRouter } from "react-router-dom";
-import { EMAIL_REGEX } from "../../utils/helpers";
 import axios from "axios";
 import actions from "../../store/actions";
 import { connect } from "react-redux";
@@ -19,25 +16,6 @@ class LogIn extends React.Component {
     };
   }
 
-  // email error messages
-  async setEmailState(emailInput) {
-    const lowerCasedEmailInput = emailInput.toLowerCase();
-
-    if (emailInput === "")
-      this.setState({
-        emailError: "Please enter your email address.",
-        hasEmailError: true,
-      });
-    else if (EMAIL_REGEX.test(lowerCasedEmailInput) === false) {
-      this.setState({
-        emailError: "Please enter a valid email address.",
-        hasEmailError: true,
-      });
-    } else {
-      this.setState({ emailError: "", hasEmailError: false });
-    }
-  }
-
   checkHasLocalPart(passwordInput, emailInput) {
     const localPart = emailInput.split("@")[0];
     if (localPart === "") return false;
@@ -45,55 +23,45 @@ class LogIn extends React.Component {
     else return passwordInput.includes(localPart);
   }
 
-  // password error messages
-  async setPasswordState(passwordInput, emailInput) {
-    if (passwordInput === "") {
-      this.setState({
-        passwordError: "Please enter a password.",
-        hasPasswordError: true,
-      });
-    } else {
-      this.setState({ passwordError: "", hasPasswordError: false });
-    }
-  }
-
   async validateAndCreateUser() {
     // email cant be blank
     // must have valid email regex
     const emailInput = document.getElementById("login-email-input").value;
     const passwordInput = document.getElementById("login-password-input").value;
-    await this.setEmailState(emailInput);
-    await this.setPasswordState(passwordInput, emailInput);
-    if (
-      this.state.hasEmailError === false &&
-      this.state.hasPasswordError === false
-    ) {
-      const user = {
-        id: getUuid(),
-        email: emailInput,
-        password: passwordInput,
-        createdAt: Date.now(),
-      };
-      console.log("created user object for POST: ", user);
-      // mimis api response
-      axios
-        .get(
-          "https://raw.githubusercontent.com/jpilapil/white-bear-mpa/master/src/mock-data/user.json"
-        )
-        .then((res) => {
-          const currentUser = res.data;
-          console.log(currentUser);
-          this.props.dispatch({
-            type: actions.UPDATE_CURRENT_USER,
-            payload: res.data,
-          });
-        })
-        .catch((error) => {
-          // handle error
-          console.log(error);
+
+    const user = {
+      email: emailInput,
+      password: passwordInput,
+    };
+    console.log("created user object for POST: ", user);
+
+    axios
+      .post("/api/v1/users/auth", user)
+      .then((res) => {
+        console.log(res.data);
+        this.props.dispatch({
+          // update currentUser in global state in redux with API response
+          type: actions.UPDATE_CURRENT_USER,
+          payload: res.data,
         });
-      this.props.history.push("/create-answer");
-    }
+        this.props.history.push("/create-answer");
+      })
+      .catch((err) => {
+        // use error responses to trigger state
+        const { data } = err.response;
+        console.log(data);
+        const { emailError, passwordError } = data;
+        if (emailError !== "") {
+          this.setState({ hasEmailError: true, emailError });
+        } else {
+          this.setState({ hasEmailError: false, emailError });
+        }
+        if (passwordError !== "") {
+          this.setState({ hasPasswordError: true, passwordError });
+        } else {
+          this.setState({ hasPasswordError: false, passwordError });
+        }
+      });
   }
 
   render() {
