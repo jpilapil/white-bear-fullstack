@@ -66,7 +66,6 @@ class SignUp extends React.Component {
           this.setState({ hasPasswordError: false, passwordError });
         }
       });
-    console.log("created user object for POST: ", user);
   }
 
   render() {
