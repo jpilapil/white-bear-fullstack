@@ -1,4 +1,5 @@
 // the users resource
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const db = require("../../db");
@@ -10,6 +11,7 @@ const getSignUpEmailError = require("../../validation/getSignUpEmailError");
 const getSignUpPasswordError = require("../../validation/getSignUpPasswordError");
 const getLoginEmailError = require("../../validation/getLoginEmailError");
 const getLoginPasswordError = require("../../validation/getLoginPasswordError");
+const jwt = require("jsonwebtoken");
 
 // @route      POST api/v1/users
 // @desc       create a new user
@@ -68,13 +70,17 @@ router.post("/auth", async (req, res) => {
     // return the user to the client
     db.query(selectUserbyEmail, email)
       .then((users) => {
-        const user = users[0];
-        res.status(200).json({
-          // send json with values from database
-          id: user.id,
-          email: user.email,
-          createdAt: user.created_at,
+        const user = {
+          id: users[0].id,
+          email: users[0].email,
+          createdAt: users[0].created_at,
+        };
+        // contains all info from user object
+        const accessToken = jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
+          expiresIn: "7d",
         });
+
+        res.status(200).json(accessToken);
       })
       .catch((err) => {
         console.log(err);
