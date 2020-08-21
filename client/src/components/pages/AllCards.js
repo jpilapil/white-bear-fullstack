@@ -114,7 +114,7 @@ export default class AllCards extends React.Component {
 
           <div className="row">
             <div className="col-6 mb-4">
-              <p className="text-muted">Sort cards by</p>
+              <p className="text-muted">Sort cards by:</p>
             </div>
             <div className="col-6 mb-4">
               <select
