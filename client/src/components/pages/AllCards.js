@@ -2,7 +2,6 @@ import React from "react";
 import AppTemplate from "../ui/AppTemplate";
 import MemoryCard from "../ui/MemoryCard";
 import axios from "axios";
-const userId = "a70d566a-9701-449e-8556-554bfda5be2f";
 
 // const memoryCard = memoryCards[2];
 
@@ -62,7 +61,7 @@ export default class AllCards extends React.Component {
   setMemoryCards() {
     axios
       .get(
-        `/api/v1/memory-cards?userId=${userId}&searchTerm=${this.state.searchTerm}&order=${this.state.order}`
+        `/api/v1/memory-cards?&searchTerm=${this.state.searchTerm}&order=${this.state.order}`
       )
       .then((res) => {
         // use ES6 arrow function to grant access to 'this' https://stackoverflow.com/questions/38238512/react-this-is-undefined
