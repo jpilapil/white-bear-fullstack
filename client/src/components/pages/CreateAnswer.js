@@ -10,9 +10,9 @@ import getNextAttemptAt from "../../utils/getNextAttamptAt";
 class CreateAnswer extends React.Component {
   constructor(props) {
     super(props);
-    console.log("in here");
     this.state = {
-      answerText: "",
+      // if there is an answer, use answer. if undefined, use blank string
+      answerText: this.props.creatableCard.answer || "",
     };
   }
 
@@ -65,6 +65,7 @@ class CreateAnswer extends React.Component {
                   defaultValue={this.state.answerText}
                   autoFocus
                   onChange={(e) => this.setAnswerText(e)}
+                  defaultValue={this.state.answerText}
                 ></textarea>
               </div>
             </div>
@@ -108,6 +109,7 @@ function mapStateToProps(state) {
   // map state to props in local component
   return {
     currentUser: state.currentUser,
+    creatableCard: state.creatableCard,
   };
 }
 export default connect(mapStateToProps)(CreateAnswer);
