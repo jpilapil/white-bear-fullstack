@@ -63,9 +63,8 @@ class CreateAnswer extends React.Component {
                 <textarea
                   rows="8"
                   defaultValue={this.state.answerText}
-                  autoFocus
+                  autoFocus={true}
                   onChange={(e) => this.setAnswerText(e)}
-                  defaultValue={this.state.answerText}
                 ></textarea>
               </div>
             </div>
