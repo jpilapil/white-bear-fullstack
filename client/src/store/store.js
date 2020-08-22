@@ -9,7 +9,11 @@ const initialState = {
     cards: [],
     index: 0,
   },
-  editableCard: {},
+  editableCard: {
+    card: {},
+    prevRoute: "",
+  },
+  creatableCard: {},
 };
 
 const store = createStore(combineReducers, initialState, composeWithDevTools());

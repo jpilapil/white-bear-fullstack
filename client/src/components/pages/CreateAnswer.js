@@ -1,18 +1,18 @@
 import React from "react";
 import AppTemplate from "../ui/AppTemplate";
-import memoryCards from "../../mock-data/memory-cards";
 import classnames from "classnames";
-import { checkIsOver, MAX_CARD_CHARS } from "../../utils/helpers";
-import { Link } from "react-router-dom";
-const memoryCard = memoryCards[2];
+import { checkIsOver, MAX_CARD_CHARS, defaultLevel } from "../../utils/helpers";
+import { connect } from "react-redux";
+import actions from "../../store/actions";
+import { v4 as getUuid } from "uuid";
+import getNextAttemptAt from "../../utils/getNextAttamptAt";
 
-export default class CreateAnswer extends React.Component {
+class CreateAnswer extends React.Component {
   constructor(props) {
     super(props);
     console.log("in here");
     this.state = {
-      answerText: memoryCard.answer,
-      imageryText: memoryCard.imagery,
+      answerText: "",
     };
   }
 
@@ -28,6 +28,27 @@ export default class CreateAnswer extends React.Component {
   setAnswerText(e) {
     this.setState({ answerText: e.target.value });
   }
+
+  setCreatableCard() {
+    const currentTime = Date.now();
+    this.props.dispatch({
+      type: actions.UPDATE_CREATABLE_CARD,
+      payload: {
+        // the card
+        id: getUuid(),
+        answer: this.state.answerText,
+        imagery: "",
+        userId: this.props.currentUser.id,
+        createdAt: currentTime,
+        nextAttemptAt: getNextAttemptAt(defaultLevel, currentTime),
+        lastAttemptAt: currentTime,
+        totalSuccessfulAttempts: 0,
+        level: 1,
+      },
+    });
+    this.props.history.push("/create-imagery");
+  }
+
   render() {
     return (
       <AppTemplate>
@@ -41,7 +62,7 @@ export default class CreateAnswer extends React.Component {
                 {/* <textarea rows="11" className="d-sm-none" autoFocus></textarea> */}
                 <textarea
                   rows="8"
-                  defaultValue={memoryCard.answer}
+                  defaultValue={this.state.answerText}
                   autoFocus
                   onChange={(e) => this.setAnswerText(e)}
                 ></textarea>
@@ -66,18 +87,27 @@ export default class CreateAnswer extends React.Component {
           {/* Clears float */}
           <div className="clearfix"></div>
 
-          <Link
-            to="/create-imagery"
+          <button
             className={classnames(
               "btn btn-lg btn-outline-primary float-right",
               { disabled: this.checkTextLimit() }
             )}
-            id="nextAnswer"
+            onClick={() => {
+              this.setCreatableCard();
+            }}
           >
             Next
-          </Link>
+          </button>
         </div>
       </AppTemplate>
     );
   }
 }
+
+function mapStateToProps(state) {
+  // map state to props in local component
+  return {
+    currentUser: state.currentUser,
+  };
+}
+export default connect(mapStateToProps)(CreateAnswer);

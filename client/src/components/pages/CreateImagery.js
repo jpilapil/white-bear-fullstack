@@ -5,10 +5,12 @@ import memoryCards from "../../mock-data/memory-cards";
 import classnames from "classnames";
 import { checkIsOver, MAX_CARD_CHARS } from "../../utils/helpers";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import actions from "../../store/actions";
 
 const memoryCard = memoryCards[2];
 
-export default class CreateImagery extends React.Component {
+class CreateImagery extends React.Component {
   constructor(props) {
     super(props);
     console.log("in here");
@@ -37,6 +39,37 @@ export default class CreateImagery extends React.Component {
     this.setState({ answerText: e.target.value });
   }
 
+  updateCreatableCard() {
+    console.log("updating creatable card");
+    const {
+      id,
+      answer,
+      userId,
+      createdAt,
+      nextAttemptAt,
+      lastAttemptAt,
+      totalSuccessfulAttempts,
+      level,
+    } = this.props.creatableCard;
+    this.props.dispatch({
+      type: actions.UPDATE_CREATABLE_CARD,
+      payload: {
+        // the card
+        id: id,
+        answer: answer,
+        imagery: this.state.imageryText,
+        userId: userId,
+        createdAt: createdAt,
+        nextAttemptAt: nextAttemptAt,
+        lastAttemptAt: lastAttemptAt,
+        totalSuccessfulAttempts: totalSuccessfulAttempts,
+        level: level,
+      },
+    });
+    // save to db
+    // go to create answer
+  }
+
   render() {
     return (
       <AppTemplate>
@@ -61,14 +94,7 @@ export default class CreateImagery extends React.Component {
           </div>
 
           <div className="card bg-secondary">
-            <div className="card-body">
-              <textarea
-                rows="8"
-                defaultValue={memoryCard.answer}
-                autoFocus
-                onChange={(e) => this.setAnswerText(e)}
-              ></textarea>
-            </div>
+            <div className="card-body">{this.props.creatableCard.answer}</div>
           </div>
         </div>
 
@@ -102,12 +128,13 @@ export default class CreateImagery extends React.Component {
           Back to answer
         </Link>
 
-        <Link
-          to="all-cards"
+        <button
           className={classnames("btn btn-lg btn-primary float-right", {
             disabled: this.checkTextLimit(),
           })}
-          id="save-imagery"
+          onClick={() => {
+            this.updateCreatableCard();
+          }}
         >
           <img
             src={saveIcon}
@@ -117,8 +144,16 @@ export default class CreateImagery extends React.Component {
             alt="save button"
           />
           Save
-        </Link>
+        </button>
       </AppTemplate>
     );
   }
 }
+
+function mapStateToProps(state) {
+  // map state to props in local component
+  return {
+    creatableCard: state.creatableCard,
+  };
+}
+export default connect(mapStateToProps)(CreateImagery);
