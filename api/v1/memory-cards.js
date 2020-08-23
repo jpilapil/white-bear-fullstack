@@ -46,12 +46,12 @@ router.get("/", validateJwt, (req, res) => {
           level: memoryCard.level,
         };
       });
-      res.json(camelCaseMemoryCards);
+      return res.status(200).json(camelCaseMemoryCards);
     })
     .catch((err) => {
       // logic executed on failed response
       console.log(err);
-      res.status(400).json(err);
+      return res.status(400).json(err);
     });
 });
 
@@ -88,7 +88,7 @@ router.post("/", validateJwt, (req, res) => {
     .then((dbRes) => {
       //success
       console.log("Created memory card in the database", dbRes);
-      // return with a status response, needs json message
+      // return with a status response, needs json
       return res.status(200).json({ success: "Card created :)" });
     })
     .catch((err) => {
@@ -96,7 +96,7 @@ router.post("/", validateJwt, (req, res) => {
       console.log(err);
       // return with an error status response
       dbError = `${err.code} ${err.sqlMessage}`;
-      res.status(400).json({ dbError });
+      return res.status(400).json({ dbError });
     });
 });
 

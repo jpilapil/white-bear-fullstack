@@ -12,6 +12,28 @@ class ReviewAnswer extends React.Component {
       this.props.history.push("/review-empty");
     }
   }
+
+  updateCardWithNeedsWork(memoryCard) {
+    this.goToNextCard();
+  }
+
+  updateCardWithGotIt(memoryCard) {
+    // update properties
+    memoryCard.totalSuccessfulAttempts += 1;
+    memoryCard.lastAttemptAt = Date.now();
+    const queue = { ...this.props.queue };
+    queue.cards[this.props.queue.index] = memoryCard;
+    // update global state
+    this.props.dispatch({
+      type: actions.UPDATE_QUEUED_CARD,
+      payload: queue,
+    });
+    // db PUT card in axios req
+    // TODO: on success, fire overlay
+    // TODO: on error, fire overlay
+    this.goToNextCard();
+  }
+
   goToNextCard() {
     // if queue is empty, go to out of cards page
     // you're on the last card
@@ -25,8 +47,7 @@ class ReviewAnswer extends React.Component {
     }
   }
 
-  storeEditableCard() {
-    const memoryCard = this.props.queue.cards[this.props.queue.index];
+  storeEditableCard(memoryCard) {
     this.props.dispatch({
       type: actions.STORE_EDITABLE_CARD,
       payload: {
@@ -37,7 +58,7 @@ class ReviewAnswer extends React.Component {
   }
 
   render() {
-    const memoryCard = this.props.queue.cards[this.props.queue.index]; // get all the cards from the queue and use bracket notation to find the index of the current card
+    const memoryCard = { ...this.props.queue.cards[this.props.queue.index] }; // get all the cards from the queue and use bracket notation to find the index of the current card
     return (
       <AppTemplate>
         <div className="mb-5"></div>
@@ -56,7 +77,7 @@ class ReviewAnswer extends React.Component {
           to="/edit"
           className="btn btn-link"
           onClick={() => {
-            this.storeEditableCard();
+            this.storeEditableCard(memoryCard);
           }}
         >
           Edit
@@ -65,7 +86,7 @@ class ReviewAnswer extends React.Component {
           <button
             className="btn btn-outline-primary mr-4"
             onClick={() => {
-              this.goToNextCard(); // on click, run this function
+              this.updateCardWithNeedsWork(memoryCard); // on click, run this function
             }}
           >
             Needs Work
@@ -73,7 +94,7 @@ class ReviewAnswer extends React.Component {
           <button
             className="btn btn-primary"
             onClick={() => {
-              this.goToNextCard();
+              this.updateCardWithGotIt(memoryCard);
             }}
           >
             <img

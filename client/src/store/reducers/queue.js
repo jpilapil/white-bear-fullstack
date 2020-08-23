@@ -17,6 +17,8 @@ export default function queue(queue = {}, action) {
       newQueue.cards = [];
       newQueue.index = 0;
       return newQueue;
+    case actions.UPDATE_QUEUED_CARD:
+
     default:
       // else, return initial state
       return queue;

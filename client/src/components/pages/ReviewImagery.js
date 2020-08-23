@@ -14,9 +14,7 @@ class ReviewImagery extends React.Component {
       console.log("empty array queue cards");
       // Make a request for a user with a given ID
       axios
-        .get(
-          "https://raw.githubusercontent.com/jpilapil/white-bear-mpa/master/src/mock-data/memory-cards.json"
-        )
+        .get(`/api/v1/queue`)
         .then((res) => {
           // handle success
           console.log(res);
