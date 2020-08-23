@@ -4,6 +4,7 @@ import AppTemplate from "../ui/AppTemplate";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import actions from "../../store/actions";
+import axios from "axios";
 
 class ReviewAnswer extends React.Component {
   constructor(props) {
@@ -23,16 +24,19 @@ class ReviewAnswer extends React.Component {
     memoryCard.lastAttemptAt = Date.now();
     const queue = { ...this.props.queue };
     queue.cards[this.props.queue.index] = memoryCard;
-
-    // update global state
-    this.props.dispatch({
-      type: actions.UPDATE_QUEUED_CARDS,
-      payload: queue.cards,
-    });
     // db PUT card in axios req
-    // TODO: on success, fire overlay
-    // TODO: on error, fire overlay
-    this.goToNextCard();
+    axios
+      // post creatableCard obj in redux store
+      .put(`/api/v1/memory-cards/${memoryCard.id}`, memoryCard)
+      .then(() => {
+        console.log("Memory Card updated!");
+        this.goToNextCard();
+      })
+      .catch((err) => {
+        const { data } = err.response;
+        console.log(data);
+        // display error overlay & hide error overlay after 5 sec
+      });
   }
 
   goToNextCard() {

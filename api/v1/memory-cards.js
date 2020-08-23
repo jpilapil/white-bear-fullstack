@@ -100,4 +100,49 @@ router.post("/", validateJwt, (req, res) => {
     });
 });
 
+// @route      PUT api/v1/memory-cards/:id
+// @desc       Update a memory card in the memory cards resource
+// @access     Private
+
+router.put("/:id", validateJwt, (req, res) => {
+  // create user var with req.user which is located in validateJwt
+  const user = req.user;
+  const {
+    id,
+    imagery,
+    answer,
+    createdAt,
+    nextAttemptAt,
+    lastAttemptAt,
+    totalSuccessfulAttempts,
+    level,
+  } = req.body;
+  const memoryCard = {
+    id: id,
+    imagery: imagery,
+    answer: answer,
+    user_id: user.id,
+    created_at: createdAt,
+    next_attempt_at: nextAttemptAt,
+    last_attempt_at: lastAttemptAt,
+    total_successful_attempts: totalSuccessfulAttempts,
+    level: level,
+  };
+  console.log(memoryCard);
+  db.query(insertMemoryCard, memoryCard)
+    .then((dbRes) => {
+      //success
+      console.log("Created memory card in the database", dbRes);
+      // return with a status response, needs json
+      return res.status(200).json({ success: "Card created :)" });
+    })
+    .catch((err) => {
+      //err
+      console.log(err);
+      // return with an error status response
+      dbError = `${err.code} ${err.sqlMessage}`;
+      return res.status(400).json({ dbError });
+    });
+});
+
 module.exports = router;
