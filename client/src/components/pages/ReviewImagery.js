@@ -17,10 +17,11 @@ class ReviewImagery extends React.Component {
         .get(`/api/v1/queue`)
         .then((res) => {
           // handle success
+          const cards = res.data;
           console.log(res);
           props.dispatch({
-            type: actions.STORE_QUEUED_CARDS,
-            payload: res.data,
+            type: actions.UPDATE_QUEUED_CARDS,
+            payload: cards,
           }); // payload = all of our data(array of objects)
         })
         .catch((error) => {

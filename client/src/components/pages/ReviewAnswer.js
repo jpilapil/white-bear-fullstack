@@ -23,10 +23,11 @@ class ReviewAnswer extends React.Component {
     memoryCard.lastAttemptAt = Date.now();
     const queue = { ...this.props.queue };
     queue.cards[this.props.queue.index] = memoryCard;
+
     // update global state
     this.props.dispatch({
-      type: actions.UPDATE_QUEUED_CARD,
-      payload: queue,
+      type: actions.UPDATE_QUEUED_CARDS,
+      payload: queue.cards,
     });
     // db PUT card in axios req
     // TODO: on success, fire overlay
