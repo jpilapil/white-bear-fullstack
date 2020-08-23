@@ -73,13 +73,14 @@ class CreateImagery extends React.Component {
       .post("/api/v1/memory-cards", this.props.creatableCard)
       .then(() => {
         console.log("Memory Card created!");
-        // display success overlay
-        // route to "/create-answer"
+        // TODO: display success overlay
         // clear creatableCard from redux
         this.props.dispatch({
           type: actions.UPDATE_CREATABLE_CARD,
           payload: {},
         });
+        // route to "/create-answer"
+        this.props.history.push("/create-answer");
       })
       .catch((err) => {
         const { data } = err.response;
@@ -105,7 +106,7 @@ class CreateImagery extends React.Component {
               <textarea
                 rows="8"
                 defaultValue={memoryCard.imagery}
-                autoFocus
+                autoFocus={true}
                 onChange={(e) => this.setImageryText(e)}
               ></textarea>
             </div>

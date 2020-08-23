@@ -88,12 +88,15 @@ router.post("/", validateJwt, (req, res) => {
     .then((dbRes) => {
       //success
       console.log("Created memory card in the database", dbRes);
-      // return with a status response
+      // return with a status response, needs json message
+      return res.status(200).json({ success: "Card created :)" });
     })
     .catch((err) => {
       //err
       console.log(err);
       // return with an error status response
+      dbError = `${err.code} ${err.sqlMessage}`;
+      res.status(400).json({ dbError });
     });
 });
 

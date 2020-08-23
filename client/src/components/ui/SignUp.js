@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 import axios from "axios";
 import actions from "../../store/actions";
 import { connect } from "react-redux";
+import jwtDecode from "jwt-decode";
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -42,13 +43,16 @@ class SignUp extends React.Component {
     axios
       .post("/api/v1/users", user)
       .then((res) => {
-        console.log(res.data);
+        // set token in local storage
+        const authToken = res.data;
+        localStorage.setItem("authToken", authToken);
+        const user = jwtDecode(authToken);
         this.props.dispatch({
           // update currentUser in global state in redux with API response
           type: actions.UPDATE_CURRENT_USER,
-          payload: res.data,
+          payload: user,
         });
-        // axios.defaults.headers.common["x-auth-token"] = authToken;
+        axios.defaults.headers.common["x-auth-token"] = authToken;
         this.props.history.push("/create-answer");
       })
       .catch((err) => {

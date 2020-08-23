@@ -34,13 +34,17 @@ router.post("/", async (req, res) => {
       .then(() => {
         db.query(selectUserById, id)
           .then((users) => {
-            const user = users[0];
-            res.status(200).json({
-              // send json with values from database
-              id: user.id,
-              email: user.email,
-              createdAt: user.created_at,
+            const user = {
+              id: users[0].id,
+              email: users[0].email,
+              createdAt: users[0].created_at,
+            };
+            // contains all info from user object
+            const accessToken = jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
+              expiresIn: "7d",
             });
+
+            res.status(200).json(accessToken);
           })
           .catch((err) => {
             console.log(err);
