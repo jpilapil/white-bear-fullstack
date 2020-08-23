@@ -19,15 +19,14 @@ class ReviewAnswer extends React.Component {
   }
 
   updateCardWithGotIt(memoryCard) {
+    const newMemoryCard = { ...memoryCard };
     // update properties
-    memoryCard.totalSuccessfulAttempts += 1;
-    memoryCard.lastAttemptAt = Date.now();
-    const queue = { ...this.props.queue };
-    queue.cards[this.props.queue.index] = memoryCard;
+    newMemoryCard.totalSuccessfulAttempts += 1;
+    newMemoryCard.lastAttemptAt = Date.now();
     // db PUT card in axios req
     axios
       // post creatableCard obj in redux store
-      .put(`/api/v1/memory-cards/${memoryCard.id}`, memoryCard)
+      .put(`/api/v1/memory-cards/${newMemoryCard.id}`, newMemoryCard)
       .then(() => {
         console.log("Memory Card updated!");
         this.goToNextCard();
@@ -63,7 +62,7 @@ class ReviewAnswer extends React.Component {
   }
 
   render() {
-    const memoryCard = { ...this.props.queue.cards[this.props.queue.index] }; // get all the cards from the queue and use bracket notation to find the index of the current card
+    const memoryCard = this.props.queue.cards[this.props.queue.index]; // get all the cards from the queue and use bracket notation to find the index of the current card
     return (
       <AppTemplate>
         <div className="mb-5"></div>
