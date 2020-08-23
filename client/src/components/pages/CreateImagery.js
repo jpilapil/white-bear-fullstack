@@ -7,6 +7,7 @@ import { checkIsOver, MAX_CARD_CHARS } from "../../utils/helpers";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import actions from "../../store/actions";
+import axios from "axios";
 
 const memoryCard = memoryCards[2];
 
@@ -39,7 +40,7 @@ class CreateImagery extends React.Component {
     this.setState({ answerText: e.target.value });
   }
 
-  updateCreatableCard() {
+  async updateCreatableCard() {
     console.log("updating creatable card");
     const {
       id,
@@ -51,7 +52,7 @@ class CreateImagery extends React.Component {
       totalSuccessfulAttempts,
       level,
     } = this.props.creatableCard;
-    this.props.dispatch({
+    await this.props.dispatch({
       type: actions.UPDATE_CREATABLE_CARD,
       payload: {
         // the card
@@ -67,7 +68,24 @@ class CreateImagery extends React.Component {
       },
     });
     // save to db
-    // go to create answer
+    axios
+      // post creatableCard obj in redux store
+      .post("/api/v1/memory-cards", this.props.creatableCard)
+      .then(() => {
+        console.log("Memory Card created!");
+        // display success overlay
+        // route to "/create-answer"
+        // clear creatableCard from redux
+        this.props.dispatch({
+          type: actions.UPDATE_CREATABLE_CARD,
+          payload: {},
+        });
+      })
+      .catch((err) => {
+        const { data } = err.response;
+        console.log(data);
+        // display error overlay & hide error overlay after 5 sec
+      });
   }
 
   render() {
