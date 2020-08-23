@@ -2,7 +2,6 @@ import React from "react";
 import saveIcon from "../../icons/save.svg";
 import AppTemplate from "../ui/AppTemplate";
 import { Link } from "react-router-dom";
-import memoryCards from "../../mock-data/memory-cards";
 import toDisplayDate from "date-fns/format";
 import classnames from "classnames";
 import { checkIsOver, MAX_CARD_CHARS } from "../../utils/helpers";
@@ -10,16 +9,15 @@ import { connect } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 import without from "lodash/without";
 import actions from "../../store/actions";
-
-const memoryCard = memoryCards[2];
+import axios from "axios";
 
 class Edit extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      answerText: memoryCard.answer,
-      imageryText: memoryCard.imagery,
+      answerText: this.props.editableCard.card.answer,
+      imageryText: this.props.editableCard.card.imagery,
       isDeleteChecked: false,
     };
   }
@@ -57,16 +55,41 @@ class Edit extends React.Component {
     }
   }
 
+  saveCard() {
+    if (!this.checkTextLimit()) {
+      // get answerText from state
+      // get imageryText from state
+      // put into db
+      const memoryCard = { ...this.props.editableCard.card };
+      memoryCard.answer = this.state.answerText;
+      memoryCard.imagery = this.state.imageryText;
+      // db PUT card in axios req
+      axios
+        // post creatableCard obj in redux store
+        .put(`/api/v1/memory-cards/${memoryCard.id}`, memoryCard)
+        .then(() => {
+          console.log("Memory Card saved!");
+          // update redux queue
+          const cards = [...this.props.queue.cards];
+          cards[this.props.queue.index] = memoryCard;
+          this.props.dispatch({
+            type: actions.UPDATE_QUEUED_CARDS,
+            payload: cards,
+          });
+          // on success:
+          this.props.history.push(this.props.editableCard.prevRoute);
+        })
+        .catch((err) => {
+          const { data } = err.response;
+          console.log(data);
+          // display error overlay & hide error overlay after 5 sec
+        });
+    }
+  }
+
   deleteCardFromStore() {
     const deletedCard = this.props.editableCard.card;
-    // console.log(deletedCard);
     const cards = this.props.queue.cards;
-    // console.log(cards);
-    // const filteredCards = cards.filter((card) => {
-    //   if (card !== deletedCard) {
-    //     return card;
-    //   }
-    // });
     const filteredCards = without(cards, deletedCard);
     console.log(filteredCards);
     this.props.dispatch({
@@ -145,12 +168,14 @@ class Edit extends React.Component {
             >
               Discard changes
             </Link>
-            <Link
-              to={this.props.editableCard.prevRoute}
+            <button
               className={classnames("btn btn-lg btn-primary float-right", {
                 disabled: this.checkTextLimit(),
               })}
               id="save-imagery"
+              onClick={() => {
+                this.saveCard();
+              }}
             >
               <img
                 src={saveIcon}
@@ -160,7 +185,7 @@ class Edit extends React.Component {
                 alt="save button"
               />
               Save
-            </Link>
+            </button>
             {/* Card props and delete card */}
             <h4 className="text-center mt-5 text-muted">Card properties</h4>
             <div className="row mt-5">
