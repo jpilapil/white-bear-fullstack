@@ -121,7 +121,6 @@ class Edit extends React.Component {
                   <textarea
                     rows="8"
                     defaultValue={this.props.editableCard.card.imagery}
-                    autoFocus
                     onChange={(e) => this.setImageryText(e)}
                   ></textarea>
                 </div>
@@ -132,7 +131,6 @@ class Edit extends React.Component {
                   <textarea
                     rows="8"
                     defaultValue={this.props.editableCard.card.answer}
-                    autoFocus
                     onChange={(e) => this.setAnswerText(e)}
                   ></textarea>
                 </div>
