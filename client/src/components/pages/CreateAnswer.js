@@ -5,7 +5,7 @@ import { checkIsOver, MAX_CARD_CHARS, defaultLevel } from "../../utils/helpers";
 import { connect } from "react-redux";
 import actions from "../../store/actions";
 import { v4 as getUuid } from "uuid";
-import getNextAttemptAt from "../../utils/getNextAttamptAt";
+import getNextAttemptAt from "../../utils/getNextAttemptAt";
 
 class CreateAnswer extends React.Component {
   constructor(props) {
