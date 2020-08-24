@@ -64,58 +64,56 @@ export default class AllCards extends React.Component {
   render() {
     return (
       <AppTemplate>
-        <div>
-          {/* Search */}
-          <div className="row mt-3">
-            <div className="col-8 col-sm-8 mb-4">
-              <input
-                type="search"
-                className="form-control border"
-                placeholder="Search for a word"
-                id="search-input"
-              />
-            </div>
-            <div className="col-4 col-sm-4 mb-4">
-              <button
-                className="btn btn-sm btn-primary float-right"
-                onClick={() => this.setSeachTerm()}
-              >
-                Search
-              </button>
-            </div>
+        {/* Search */}
+        <div className="row mt-3">
+          <div className="col-8 col-sm-8 mb-4">
+            <input
+              type="search"
+              className="form-control border"
+              placeholder="Search for a word"
+              id="search-input"
+            />
           </div>
-
-          {/* Sort  */}
-
-          <div className="row">
-            <div className="col-6 mb-4">
-              <p className="text-muted">Sort cards by</p>
-            </div>
-            <div className="col-6 mb-4">
-              <select
-                value={this.state.order}
-                className="form-control form-control-sm"
-                onChange={(e) => this.setOrder(e)}
-              >
-                <option value="memory_cards.created_at%20DESC">
-                  Most recent
-                </option>
-                <option value="memory_cards.created_at%20ASC">Oldest</option>
-                <option value="memory_cards.total_successful_attempts%20ASC, memory_cards.created_at%20ASC">
-                  Hardest
-                </option>
-                <option value="memory_cards.total_successful_attempts%20DESC, memory_cards.created_at%20DESC">
-                  Easiest
-                </option>
-              </select>
-            </div>
+          <div className="col-4 col-sm-4 mb-4">
+            <button
+              className="btn btn-sm btn-primary float-right"
+              onClick={() => this.setSeachTerm()}
+            >
+              Search
+            </button>
           </div>
-          {this.state.memoryCards.map((memoryCard) => {
-            // map through memory cards array, get each memory card
-            // find each card by id, return answer and imagery values
-            return <MemoryCard card={memoryCard} key={memoryCard.id} />;
-          })}
         </div>
+
+        {/* Sort  */}
+
+        <div className="row">
+          <div className="col-6 mb-4">
+            <p className="text-muted">Sort cards by</p>
+          </div>
+          <div className="col-6 mb-4">
+            <select
+              value={this.state.order}
+              className="form-control form-control-sm"
+              onChange={(e) => this.setOrder(e)}
+            >
+              <option value="memory_cards.created_at%20DESC">
+                Most recent
+              </option>
+              <option value="memory_cards.created_at%20ASC">Oldest</option>
+              <option value="memory_cards.total_successful_attempts%20ASC, memory_cards.created_at%20ASC">
+                Hardest
+              </option>
+              <option value="memory_cards.total_successful_attempts%20DESC, memory_cards.created_at%20DESC">
+                Easiest
+              </option>
+            </select>
+          </div>
+        </div>
+        {this.state.memoryCards.map((memoryCard) => {
+          // map through memory cards array, get each memory card
+          // find each card by id, return answer and imagery values
+          return <MemoryCard card={memoryCard} key={memoryCard.id} />;
+        })}
         {this.hasNoCards() && (
           <p className="lead text-muted text-center">
             You have 0 cards. Please create a card and it will show up here.

@@ -1,7 +1,6 @@
 import React from "react";
 import saveIcon from "../../icons/save.svg";
 import AppTemplate from "../ui/AppTemplate";
-import memoryCards from "../../mock-data/memory-cards";
 import classnames from "classnames";
 import { checkIsOver, MAX_CARD_CHARS } from "../../utils/helpers";
 import { Link } from "react-router-dom";
@@ -9,22 +8,17 @@ import { connect } from "react-redux";
 import actions from "../../store/actions";
 import axios from "axios";
 
-const memoryCard = memoryCards[2];
-
 class CreateImagery extends React.Component {
   constructor(props) {
     super(props);
     console.log("in here");
     this.state = {
-      answerText: memoryCard.answer,
-      imageryText: memoryCard.imagery,
+      imageryText: "",
     };
   }
 
-  checkTextLimit() {
+  checkHasInvalidCharCount() {
     if (
-      this.state.answerText.length > MAX_CARD_CHARS ||
-      this.state.answerText.length === 0 ||
       this.state.imageryText.length > MAX_CARD_CHARS ||
       this.state.imageryText.length === 0
     ) {
@@ -41,7 +35,7 @@ class CreateImagery extends React.Component {
   }
 
   updateCreatableCard() {
-    if (!this.checkTextLimit()) {
+    if (!this.checkHasInvalidCharCount()) {
       console.log("updating creatable card");
       const creatableCard = { ...this.props.creatableCard };
       creatableCard.imagery = this.state.imageryText;
@@ -90,7 +84,7 @@ class CreateImagery extends React.Component {
               ></textarea> */}
               <textarea
                 rows="8"
-                defaultValue={memoryCard.imagery}
+                // defaultValue={memoryCard.imagery}
                 autoFocus={true}
                 onChange={(e) => this.setImageryText(e)}
               ></textarea>
@@ -103,7 +97,7 @@ class CreateImagery extends React.Component {
         </div>
 
         {/* Character counter */}
-        <p className="float-right mt-2 mb-5 text-muted">
+        {/* <p className="float-right mt-2 mb-5 text-muted">
           <span
             className={classnames({
               "text-danger": checkIsOver(this.state.answerText, MAX_CARD_CHARS),
@@ -111,7 +105,7 @@ class CreateImagery extends React.Component {
           >
             Bottom: {this.state.answerText.length}/{MAX_CARD_CHARS}
           </span>
-        </p>
+        </p> */}
         <p className="float-left mt-2 mb-5 text-muted">
           <span
             className={classnames({
@@ -134,7 +128,7 @@ class CreateImagery extends React.Component {
 
         <button
           className={classnames("btn btn-lg btn-primary float-right", {
-            disabled: this.checkTextLimit(),
+            disabled: this.checkHasInvalidCharCount(),
           })}
           onClick={() => {
             this.updateCreatableCard();

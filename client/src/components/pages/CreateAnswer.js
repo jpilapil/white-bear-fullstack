@@ -12,7 +12,7 @@ class CreateAnswer extends React.Component {
     super(props);
     this.state = {
       // if there is an answer, use answer. if undefined, use blank string
-      answerText: this.props.creatableCard.answer || "",
+      answerText: "",
     };
   }
 

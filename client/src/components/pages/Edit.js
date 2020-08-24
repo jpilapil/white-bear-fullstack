@@ -79,14 +79,14 @@ class Edit extends React.Component {
 
   deleteCard() {
     const memoryCard = { ...this.props.editableCard.card };
-    //TODO: DELETE FROM DATABASSE
     // db query to delete card
     axios
       .delete(`/api/v1/memory-cards/${memoryCard.id}`)
       .then((res) => {
         console.log(res.data);
+        const deletableCard = this.props.editableCard.card;
         const cards = this.props.queue.cards;
-        const filteredCards = without(cards, memoryCard);
+        const filteredCards = without(cards, deletableCard);
         this.props.dispatch({
           type: actions.UPDATE_QUEUED_CARDS,
           payload: filteredCards,
