@@ -4,8 +4,9 @@ const router = express.Router();
 const db = require("../../db");
 // const { toJson, toSafeParse } = require("../../utils/helpers");
 const selectAllCards = require("../../queries/selectAllCards");
-const insertMemoryCard = require("../../queries/insertMemoryCard.js");
-const updateMemoryCard = require("../../queries/updateMemoryCard.js");
+const insertMemoryCard = require("../../queries/insertMemoryCard");
+const updateMemoryCard = require("../../queries/updateMemoryCard");
+const deleteMemoryCardById = require("../../queries/deleteMemoryCardById");
 const validateJwt = require("../../utils/validateJwt");
 
 // @route      GET api/v1/memory-cards
@@ -143,6 +144,25 @@ router.put("/:id", validateJwt, (req, res) => {
       // return with an error status response
       const dbError = `${err.code} ${err.sqlMessage}`;
       return res.status(400).json({ dbError });
+    });
+});
+
+// @route      DELETE api/v1/memory-cards/:id
+// @desc       Delete a memory card in the memory cards resource by id
+// @access     Private
+
+router.delete("/:id", validateJwt, (req, res) => {
+  // create user var with req.user which is located in validateJwt
+  const id = req.params.id;
+  db.query(deleteMemoryCardById, id)
+    .then(() => {
+      return res.status(200).json({ success: "Card deleted." });
+    })
+    .catch((err) => {
+      console.log(err);
+      // return with an error status response
+      const dbError = `${err.code} ${err.sqlMessage}`;
+      return res.status(500).json({ dbError });
     });
 });
 

@@ -5,17 +5,18 @@ import { connect } from "react-redux";
 import actions from "../../store/actions";
 
 class MemoryCard extends React.Component {
-  storeEditableCard() {
+  storeEditableCard(memoryCard) {
     this.props.dispatch({
       type: actions.STORE_EDITABLE_CARD,
       payload: {
-        card: this.props.card,
+        card: memoryCard,
         prevRoute: "/all-cards",
       },
     });
   }
 
   render() {
+    const memoryCard = this.props.queue.cards[this.props.queue.index];
     return (
       <div>
         {/* Card */}
@@ -39,7 +40,7 @@ class MemoryCard extends React.Component {
               to="/edit"
               className="btn btn-link d-inline"
               onClick={() => {
-                this.storeEditableCard();
+                this.storeEditableCard(memoryCard);
               }}
             >
               <img src={editIcon} alt="Edit Button" width="20px;" />
@@ -55,6 +56,8 @@ class MemoryCard extends React.Component {
 
 function mapStateToProps(state) {
   // map state to props in local component
-  return {};
+  return {
+    queue: state.queue,
+  };
 }
 export default connect(mapStateToProps)(MemoryCard);

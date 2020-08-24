@@ -22,27 +22,6 @@ export default class AllCards extends React.Component {
     this.setMemoryCards();
   }
 
-  // filterByInput() {
-  //   const input = document.getElementById("search-input").value;
-  //   const lowerCasedInput = input.toLowerCase();
-  //   console.log(lowerCasedInput);
-  //   const copyOfAllMemoryCards = [...this.state.allMemoryCards];
-  //   const filteredMemoryCards = copyOfAllMemoryCards.filter((memoryCard) => {
-  //     const lowerCasedImagery = memoryCard.imagery.toLowerCase();
-  //     const lowerCasedAnswer = memoryCard.answer.toLowerCase();
-  //     if (
-  //       lowerCasedImagery.includes(lowerCasedInput) ||
-  //       lowerCasedAnswer.includes(lowerCasedInput)
-  //     ) {
-  //       return true;
-  //     }
-  //     return false;
-  //   });
-  //   this.setState({ displayedMemoryCards: filteredMemoryCards }, () => {
-  //     this.setMemoryCards();
-  //   });
-  // }
-
   setOrder(e) {
     const newOrder = e.target.value;
     console.log(newOrder);
@@ -77,14 +56,10 @@ export default class AllCards extends React.Component {
       });
   }
 
-  // setMemoryCardsOrder(e) {
-  //   const newOrder = e.target.value;
-  //   console.log(newOrder); //returns string
-  //   const copyOfMemoryCards = [...this.state.memoryCards]; // array of all our memory cards, shallow copy
-  //   const toJson = JSON.parse(newOrder);
-  //   const orderedMemoryCards = orderBy(copyOfMemoryCards, ...toJson);
-  //   this.setState({ order: newOrder, memoryCards: orderedMemoryCards }); //updates state of the select to show which filter you clicked on (most recent, oldest, hardest, etc)
-  // }
+  hasNoCards() {
+    if (this.state.memoryCards.length === 0) return true;
+    else return false;
+  }
 
   render() {
     return (
@@ -141,6 +116,11 @@ export default class AllCards extends React.Component {
             return <MemoryCard card={memoryCard} key={memoryCard.id} />;
           })}
         </div>
+        {this.hasNoCards() && (
+          <p className="lead text-muted text-center">
+            You have 0 cards. Please create a card and it will show up here.
+          </p>
+        )}
       </AppTemplate>
     );
   }
