@@ -2,7 +2,6 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../../db");
-// const { toJson, toSafeParse } = require("../../utils/helpers");
 const selectAllCards = require("../../queries/selectAllCards");
 const insertMemoryCard = require("../../queries/insertMemoryCard");
 const updateMemoryCard = require("../../queries/updateMemoryCard");

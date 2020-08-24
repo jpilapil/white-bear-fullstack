@@ -1,7 +1,7 @@
 import React from "react";
-import saveIcon from "../../icons/save.svg";
 import AppTemplate from "../ui/AppTemplate";
 import { Link } from "react-router-dom";
+import saveIcon from "../../icons/save.svg";
 import toDisplayDate from "date-fns/format";
 import classnames from "classnames";
 import { checkIsOver, MAX_CARD_CHARS } from "../../utils/helpers";
@@ -22,7 +22,7 @@ class Edit extends React.Component {
     };
   }
 
-  checkTextLimit() {
+  checkHasInvalidCharCount() {
     if (
       this.state.answerText.length > MAX_CARD_CHARS ||
       this.state.answerText.length === 0 ||
@@ -46,7 +46,7 @@ class Edit extends React.Component {
   }
 
   saveCard() {
-    if (!this.checkTextLimit()) {
+    if (!this.checkHasInvalidCharCount()) {
       // get answerText from state
       // get imageryText from state
       // put into db
@@ -79,19 +79,22 @@ class Edit extends React.Component {
 
   deleteCard() {
     const memoryCard = { ...this.props.editableCard.card };
-    // db query to delete card
+    // query db to delete card
     axios
       .delete(`/api/v1/memory-cards/${memoryCard.id}`)
       .then((res) => {
         console.log(res.data);
         const deletableCard = this.props.editableCard.card;
+        console.log("deletableCard: ", deletableCard);
         const cards = this.props.queue.cards;
+        console.log("cards: ", cards);
         const filteredCards = without(cards, deletableCard);
+        console.log("filteredCards: ", filteredCards);
         this.props.dispatch({
           type: actions.UPDATE_QUEUED_CARDS,
           payload: filteredCards,
         });
-
+        // TODO: Display success overlay
         if (this.props.editableCard.prevRoute === "/review-answer") {
           if (filteredCards[this.props.queue.index] === undefined) {
             this.props.history.push("/review-empty");
@@ -99,13 +102,13 @@ class Edit extends React.Component {
             this.props.history.push("/review-imagery");
           }
         }
-
         if (this.props.editableCard.prevRoute === "/all-cards") {
           this.props.history.push("/all-cards");
         }
       })
       .catch((err) => {
         console.log(err.response.data);
+        // TODO: Display error overlay
       });
   }
 
@@ -174,7 +177,7 @@ class Edit extends React.Component {
             </Link>
             <button
               className={classnames("btn btn-lg btn-primary float-right", {
-                disabled: this.checkTextLimit(),
+                disabled: this.checkHasInvalidCharCount(),
               })}
               id="save-imagery"
               onClick={() => {

@@ -1,11 +1,13 @@
 import React from "react";
 import editIcon from "../../icons/edit.svg";
-import { Link } from "react-router-dom";
+
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import actions from "../../store/actions";
 
 class MemoryCard extends React.Component {
   storeEditableCard(memoryCard) {
+    console.log("STORING EDITABLE CARD");
     this.props.dispatch({
       type: actions.STORE_EDITABLE_CARD,
       payload: {
@@ -13,12 +15,13 @@ class MemoryCard extends React.Component {
         prevRoute: "/all-cards",
       },
     });
+    this.props.history.push("/edit");
   }
 
   render() {
     const memoryCard = this.props.queue.cards[this.props.queue.index];
     return (
-      <div>
+      <>
         {/* Card */}
         <div className="row">
           <div className="col-10">
@@ -36,8 +39,7 @@ class MemoryCard extends React.Component {
 
           {/* Edit button */}
           <div className="col-2">
-            <Link
-              to="/edit"
+            <button
               className="btn btn-link d-inline"
               onClick={() => {
                 this.storeEditableCard(memoryCard);
@@ -45,10 +47,10 @@ class MemoryCard extends React.Component {
             >
               <img src={editIcon} alt="Edit Button" width="20px;" />
               Edit
-            </Link>
+            </button>
           </div>
         </div>
-      </div>
+      </>
     );
   }
   //pass props as arg
@@ -60,4 +62,5 @@ function mapStateToProps(state) {
     queue: state.queue,
   };
 }
-export default connect(mapStateToProps)(MemoryCard);
+
+export default withRouter(connect(mapStateToProps)(MemoryCard));
