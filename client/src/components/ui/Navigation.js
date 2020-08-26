@@ -33,7 +33,7 @@ export default function Navigation() {
     >
       <Link
         to="/create-answer"
-        type="button"
+        // type="button"
         className={`btn btn-secondary navigation-button tab-separator ${tabActiveOnCreate(
           url
         )}`}
@@ -42,7 +42,7 @@ export default function Navigation() {
       </Link>
       <Link
         to="/review-imagery"
-        type="button"
+        // type="button"
         className={`btn btn-secondary navigation-button tab-separator ${tabActiveOnReviw(
           url
         )}`}
@@ -51,7 +51,7 @@ export default function Navigation() {
       </Link>
       <Link
         to="/all-cards"
-        type="button"
+        // type="button"
         className={`btn btn-secondary navigation-button tab-separator ${tabActiveOnAllCards(
           url
         )}`}
