@@ -12,6 +12,6 @@ White Bear is a full stack flash card style CRUD application that aids in the us
 - Bootstrap
 - Heroku
 
-### Check the full stack application here!
+### Check out the full stack application here!
 
 [White Bear](https://whitebearapp.herokuapp.com/)
